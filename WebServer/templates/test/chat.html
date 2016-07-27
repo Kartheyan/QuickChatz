@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+        <script>
+        $(document).ready(function() {
+
+            window.chat = {}
+            chat.ws = new WebSocket("ws://127.0.0.1:1025");
+
+            var username = prompt("What's your name?");
+
+            chat.sendMessage = function(msg) {
+                message = {
+                    'msg': msg
+                }
+                chat.ws.send(JSON.stringify(message));
+            }
+
+            chat.showMessage = function(msg) {
+                $('#message_list').append('<li>' + msg + '</li>');
+            }
+
+            chat.ws.onopen = function() {
+                message = {
+                    'name': username,
+                    'join': '{{ room_id }}',
+                }
+                chat.ws.send(JSON.stringify(message));
+            };
+
+            chat.ws.onmessage = function(event) {
+                response = JSON.parse(event.data);
+                if (response['ServerInfo']) {
+                    // When someone leaves or joins the chat
+                    chat.showMessage('<b>' + response['msg'] + '</b>')
+                } else if (response['text']) {
+                    // When someone has sent a message
+                    chat.showMessage(response['from'] + ': ' + response['msg']) // TODO: Escape HTML characters - vulnerable to XSS attacks
+                } else {
+                    // Status message, e.g how many connected users? TODO in ChatServer.py
+                }
+            };
+
+            chat.ws.onclose = function() {
+                alert("Could not connect to chat server, please refresh. If the problem persists please contact us");
+            };
+
+            chat.ws.onerror = function() {
+                chat.ws.close();
+                alert("Connection to chat server has been terminated due to error, please refresh. If the problem persists please contact us");
+            };
+
+            $('#message_input').keydown(function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    if (event.target.value) {
+                        chat.sendMessage(event.target.value);
+                        event.target.value = "";
+                    }
+                }
+             });
+        });
+        </script>
+    </head>
+    <body>
+        <h3>{{ room_id }}</h3>
+        <div>
+            <ul id="message_list">
+
+            </ul>
+            <input type="text" id="message_input"/>Press Enter To Send!
+        </div>
+    </body>
+</html>

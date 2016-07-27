@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickChatz | Create Chat</title>
+</head>
+<body>
+    <form action="{% url 'create-chat' %}" method="post">
+        <p>Captcha will be here</p>
+        <input type="submit" value="Create Chat">
+        {% csrf_token %}
+    </form>
+</body>
+</html>

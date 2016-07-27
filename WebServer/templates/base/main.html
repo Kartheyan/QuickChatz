@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block 'body' %}
+         <div class="mdl-tabs mdl-js-tabs">
+            <div class="mdl-tabs__tab-bar">
+               <a href="#tab1-panel" class="mdl-tabs__tab is-active">New Chat</a>
+            </div>
+            <div class="mdl-tabs__panel is-active" id="tab1-panel">
+               <center>
+                   <div class="mdl-grid">
+                       <div class="mdl-layout-spacer"></div>
+                           <center>
+                            <a href="{% url 'join-chat' %}"><button id="join" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Join Chat</button></a>
+                            <a href="{% url 'create-chat' %}"><button id="create" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Create Chat</button></a>
+                           </center>
+                       <div class="mdl-layout-spacer"></div>
+
+                    </div>
+                   <div id="content">
+
+                   </div>
+               </center>
+            </div>
+         </div>
+{% endblock %}
